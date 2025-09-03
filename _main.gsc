@@ -15,8 +15,8 @@ init() {
     return;
   }
   
-  scripts\prop_hunt\_models::clearAvailableModels(); // clearing older models
-  scripts\prop_hunt\_models::getModels(); // precaching models from current map
+  // scripts\prop_hunt\_models::clearAvailableModels(); // clearing older models
+  // scripts\prop_hunt\_models::getModels(); // precaching models from current map
 
   level.prematchPeriod = 5;
   level.isKillBoosting = false;
@@ -35,6 +35,13 @@ onPlayerConnect() {
     PrintLn("^7[^4Prop Hunt^7] Player connected: ^3" + player.name + " ^7clientId: ^3" + player.client_id);
     player thread onPlayerSpawned();
   }
+}
+
+onPlayerSpawned() {
+  level endon("game_ended");
+  self endon("disconnect");
+
+  self setupDvars();
 }
 
 onPlayerSpawned() {
