@@ -1,3 +1,6 @@
+#include maps\mp\_utility;
+#include common_scripts\utility;
+
 main() {
   level.started   = false;
   level.client_id = 0;
@@ -33,6 +36,8 @@ onPlayerConnect() {
     level.client_id++;
 
     PrintLn("^7[^4Prop Hunt^7] Player connected: ^3" + player.name + " ^7clientId: ^3" + player.client_id);
+    player thread scripts\prop_hunt\_hud::createPropHuntHud();
+    player thread scripts\prop_hunt\_hud::createPropHuntMenu();
     player thread onPlayerSpawned();
   }
 }
@@ -41,24 +46,19 @@ onPlayerSpawned() {
   level endon("game_ended");
   self endon("disconnect");
 
-  self setupDvars();
-}
-
-onPlayerSpawned() {
-  level endon("game_ended");
-  self endon("disconnect");
-  
   first_spawn = true;
 
   for(;;) {
     self waittill("spawned_player");
+    self setclientuivisibilityflag("hud_visible", 0);
+    self scripts\prop_hunt\props::initPropConfig();
+    self thread monitorKeyPress();
     if (first_spawn) {
       // self FreezeControls(false);
-      // self IPrintLn("^5Weclome ^7to Brow^5nies ^7Prop Hunt");
       if (level.started && isAlive(self)) {
         self Suicide();
         self scripts\prop_hunt\utils::changeTeam(
-          level.prop_hunt.teams.spectator
+          level.prop_hunt.teams.spectators
         );
       }
       first_spawn = false; 
@@ -72,12 +72,18 @@ monitorKeyPress() {
   self endon("build_mode");
   self endon("disconnect");
   self endon("death");
-  
-  self scripts\prop_hunt\props::initPropConfig();
+
   for(;;) {
+    if (self adsbuttonpressed() && self meleebuttonpressed()) {
+      player thread scripts\prop_hunt\_hud::animatePropHuntMenu();
+      player thread scripts\prop_hunt\_hud::animatePropHuntMenuText();
+      // open menu
+    }
     if (self ActionSlotThreeButtonPressed() && IsDefined(self.pers["prop"]) && self.pers["mode"] == "normal") {
       self.pers["prop"].index += 1;
       PrintLn("prop index: " + self.pers["prop"].index);
     }
+
+    wait .01;
   }
 }
