@@ -25,4 +25,3 @@ changeTeam(team) {
 
   self setClientDvar("g_scriptMainMenu", game["menu_class_" + self.pers["team"]]);
 }
-

@@ -7,7 +7,7 @@ createPropHuntHud() {
   self.hudTextBottomLeft.sort = 2;
   
   self.hudTextBottomRight = createServerFontString("bigfixed", 1);
-  self.hudTextBottomRight SetText("Press ^5[{+speed_throw}] ^7& ^5[{+melee}] To Open Menu");
+  self.hudTextBottomRight SetText("Press ^5[{+actionslot 3}] ^7& ^5[{+speed_throw}] To Open Menu");
   self.hudTextBottomRight SetPoint("BOTTOM_RIGHT", "BOTTOM_RIGHT", 0, 30);
   self.hudTextBottomRight.sort = 2;
 
@@ -39,19 +39,39 @@ createPropHuntMenu() {
   self.hudTop.sort = 1;
 }
 
-animatePropHuntMenu() {
-  for(i = 0; i < 25; i++) {
-    self.hudTop.y += 1.2;
-    wait .001;
+animatePropHuntMenu(toggle) {
+  if (toggle == "down") {
+    for(i = 0; i < 24; i++) {
+      self.hudTop.y += 1.25;
+      wait .001;
+    }
+  } 
+  else if (toggle == "up") {
+    for(i = 0; i < 25; i++) {
+      self.hudTop.y -= 1.25;
+      wait .001;
+    }
   }
 }
 
-animatePropHuntMenuText() {
-  wait 0.5;
-  for(i = 0; i < 25; i++) {
-    self.hudTextTop.alpha += 0.04;
-    wait .001;
+animatePropHuntMenuText(toggle) {
+  if (toggle == "in") {
+    for(i = 0; i < 25; i++) {
+      self.hudTextTop.alpha += 0.04;
+      wait .001;
+    }
+  } else if (toggle == "out") {
+    for(i = 0; i < 25; i++) {
+      self.hudTextTop.alpha -= 0.04;
+      wait .01;
+    }
   }
+}
+
+deletePropHuntMenu() {
+  wait 1;
+  self.hudTop Delete();
+  self.hudTextTop Destroy();
 }
 
 // init()
